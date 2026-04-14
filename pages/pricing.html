@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — GrowBrow.ai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .pricing-hero { padding: 140px 24px 80px; text-align: center; }
+    .toggle-wrap { display:flex; align-items:center; justify-content:center; gap:16px; margin:32px 0 60px; }
+    .toggle-label { font-size:0.9rem; color:var(--text-muted); }
+    .toggle { position:relative; width:52px; height:28px; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .slider { position:absolute; cursor:pointer; inset:0; background:var(--surface2); border-radius:50px; border:1px solid var(--border); transition:0.3s; }
+    .slider:before { content:''; position:absolute; width:20px; height:20px; left:3px; bottom:3px; background:var(--green); border-radius:50%; transition:0.3s; }
+    input:checked + .slider { background:rgba(34,197,94,0.15); }
+    input:checked + .slider:before { transform:translateX(24px); }
+    .badge-save { background:rgba(34,197,94,0.15); color:var(--green); font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:50px; font-family:var(--font-head); }
+    .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:960px; margin:0 auto; padding:0 24px; }
+    .plan-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:36px 28px; position:relative; transition:border-color 0.3s, transform 0.3s; }
+    .plan-card:hover { border-color:rgba(34,197,94,0.3); transform:translateY(-4px); }
+    .plan-popular { border-color:var(--green)!important; background:linear-gradient(135deg,rgba(34,197,94,0.08),var(--surface)); }
+    .popular-badge { position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--gradient); color:#050a10; font-family:var(--font-head); font-size:0.72rem; font-weight:700; padding:4px 16px; border-radius:50px; white-space:nowrap; }
+    .plan-name { font-family:var(--font-head); font-size:0.8rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; }
+    .plan-price { font-family:var(--font-head); font-size:3rem; font-weight:800; margin-bottom:4px; }
+    .plan-price sup { font-size:1.2rem; vertical-align:top; margin-top:10px; }
+    .plan-price .freq { font-size:0.9rem; color:var(--text-muted); font-weight:400; }
+    .plan-desc { color:var(--text-muted); font-size:0.85rem; margin-bottom:28px; }
+    .plan-features { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+    .plan-features li { font-size:0.88rem; display:flex; gap:8px; align-items:flex-start; }
+    .plan-features li::before { content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; }
+    .plan-features li.no::before { content:'✗'; color:var(--text-muted); }
+    .plan-cta { display:block; text-align:center; padding:12px; border-radius:50px; text-decoration:none; font-family:var(--font-head); font-weight:700; font-size:0.9rem; border:1px solid var(--border); color:var(--text); transition:0.2s; }
+    .plan-cta:hover { border-color:var(--green); color:var(--green); }
+    .plan-cta.primary-cta { background:var(--gradient); color:#050a10; border:none; }
+    .plan-cta.primary-cta:hover { opacity:0.9; }
+    .faq-section { padding:80px 24px; max-width:760px; margin:0 auto; }
+    .faq-title { font-family:var(--font-head); font-size:2rem; font-weight:800; text-align:center; margin-bottom:48px; }
+    .faq-item { border-bottom:1px solid var(--border); padding:20px 0; }
+    .faq-q { font-family:var(--font-head); font-size:1rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+    .faq-q .icon { transition:transform 0.3s; font-size:0.8rem; color:var(--text-muted); }
+    .faq-item.open .faq-q .icon { transform:rotate(180deg); }
+    .faq-a { max-height:0; overflow:hidden; color:var(--text-muted); font-size:0.9rem; line-height:1.7; transition:max-height 0.3s ease, padding 0.3s; }
+    .faq-item.open .faq-a { max-height:200px; padding-top:12px; }
+    @media(max-width:768px){ .pricing-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar scrolled" id="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo"><span class="logo-mark">G</span><span class="logo-text">GrowBrow<span class="logo-ai">.ai</span></span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html#features">Features</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn-ghost">Login</a>
+      <a href="signup.html" class="btn-primary">Start Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<section class="pricing-hero">
+  <p class="section-eyebrow">Pricing</p>
+  <h1 class="section-title">Simple pricing.<br /><span class="gradient-text">Unlimited growth.</span></h1>
+  <p class="section-sub">No hidden charges. Cancel anytime. Start free, scale as you grow.</p>
+  <div class="toggle-wrap">
+    <span class="toggle-label">Monthly</span>
+    <label class="toggle"><input type="checkbox" id="billingToggle" /><span class="slider"></span></label>
+    <span class="toggle-label">Annual <span class="badge-save">Save 20%</span></span>
+  </div>
+</section>
+
+<div class="pricing-grid">
+  <div class="plan-card">
+    <div class="plan-name">Starter</div>
+    <div class="plan-price"><sup>₹</sup><span class="price-val" data-monthly="0" data-annual="0">0</span><span class="freq">/mo</span></div>
+    <p class="plan-desc">Perfect for trying out GrowBrow. No credit card needed.</p>
+    <ul class="plan-features">
+      <li>1,000 messages/month</li>
+      <li>1 WhatsApp number</li>
+      <li>Basic chatbot (5 flows)</li>
+      <li>Live chat (1 agent)</li>
+      <li class="no">Broadcasts</li>
+      <li class="no">AI send-time optimizer</li>
+      <li class="no">Payments</li>
+    </ul>
+    <a href="signup.html" class="plan-cta">Get Started Free</a>
+  </div>
+
+  <div class="plan-card plan-popular">
+    <div class="popular-badge">🔥 Most Popular</div>
+    <div class="plan-name">Growth</div>
+    <div class="plan-price"><sup>₹</sup><span class="price-val" data-monthly="2499" data-annual="1999">2499</span><span class="freq">/mo</span></div>
+    <p class="plan-desc">For growing businesses ready to automate and scale.</p>
+    <ul class="plan-features">
+      <li>25,000 messages/month</li>
+      <li>3 WhatsApp numbers</li>
+      <li>Unlimited chatbot flows</li>
+      <li>Live chat (5 agents)</li>
+      <li>Unlimited broadcasts</li>
+      <li>AI send-time optimizer</li>
+      <li>In-chat UPI payments</li>
+      <li>Analytics dashboard</li>
+      <li>10+ integrations</li>
+    </ul>
+    <a href="signup.html" class="plan-cta primary-cta">Start 14-Day Free Trial</a>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-name">Enterprise</div>
+    <div class="plan-price" style="font-size:1.8rem;padding-top:8px;">Custom</div>
+    <p class="plan-desc">For large teams with custom needs, SLAs, and dedicated support.</p>
+    <ul class="plan-features">
+      <li>Unlimited messages</li>
+      <li>Unlimited numbers</li>
+      <li>Predictive AI Engine</li>
+      <li>Unlimited agents</li>
+      <li>Custom integrations</li>
+      <li>Dedicated account manager</li>
+      <li>99.9% uptime SLA</li>
+      <li>White-label option</li>
+    </ul>
+    <a href="contact.html" class="plan-cta">Contact Sales</a>
+  </div>
+</div>
+
+<section class="faq-section">
+  <h2 class="faq-title">Frequently asked questions</h2>
+  <div class="faq-item open">
+    <div class="faq-q">Is there really a free plan? <span class="icon">▼</span></div>
+    <div class="faq-a">Yes! Our Starter plan is free forever — no credit card, no expiry. You get 1,000 messages/month and access to core features to test the platform fully.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What is the WhatsApp Business API? <span class="icon">▼</span></div>
+    <div class="faq-a">The official API from Meta allows businesses to send messages at scale, build chatbots, and integrate WhatsApp into their systems. GrowBrow.ai is a Meta Business Partner, so we handle your API setup end-to-end.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Are there per-message charges on top? <span class="icon">▼</span></div>
+    <div class="faq-a">Meta charges a small per-conversation fee (typically ₹0.25–0.50 for marketing messages). Our platform fee is separate. We show you a transparent cost breakdown before you launch any campaign.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Can I cancel anytime? <span class="icon">▼</span></div>
+    <div class="faq-a">Absolutely. No lock-in. Cancel from your dashboard with one click. Annual plan refunds are prorated.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What makes GrowBrow.ai different from AiSensy? <span class="icon">▼</span></div>
+    <div class="faq-a">Our Predictive AI Engine sets us apart — it anticipates customer behavior and triggers the right message automatically. We also offer native in-chat payments, AI send-time optimization, and per-message revenue attribution that no other platform has yet.</div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div class="cta-blob"></div>
+      <p class="section-eyebrow" style="color:#a3e635">No Risk</p>
+      <h2>Start for free today.<br /><span class="gradient-text">Upgrade when ready.</span></h2>
+      <p class="cta-sub">No credit card. Setup in 5 minutes.</p>
+      <div class="cta-actions">
+        <a href="signup.html" class="btn-hero-primary">Create Free Account →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="../index.html" class="logo"><span class="logo-mark">G</span><span class="logo-text">GrowBrow<span class="logo-ai">.ai</span></span></a>
+      <p>Turn conversations into conversions.</p>
+    </div>
+    <div class="footer-col"><h4>Product</h4><a href="../index.html#features">Features</a><a href="pricing.html">Pricing</a><a href="#">API Docs</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="about.html">About</a><a href="contact.html">Contact</a></div>
+    <div class="footer-col"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 GrowBrow.ai — All rights reserved.</p></div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+  // Billing toggle
+  const toggle = document.getElementById('billingToggle');
+  toggle.addEventListener('change', () => {
+    const isAnnual = toggle.checked;
+    document.querySelectorAll('.price-val').forEach(el => {
+      const val = isAnnual ? el.dataset.annual : el.dataset.monthly;
+      if (val === '0') el.textContent = '0';
+      else el.textContent = parseInt(val).toLocaleString('en-IN');
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      item.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — GrowBrow.ai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { display:flex; }
+    /* Sidebar */
+    .sidebar {
+      width:240px; background:var(--bg2); border-right:1px solid var(--border);
+      display:flex; flex-direction:column; padding:24px 0; position:fixed; top:0; left:0; bottom:0; z-index:100;
+    }
+    .sidebar-logo { padding:0 20px 24px; border-bottom:1px solid var(--border); margin-bottom:16px; }
+    .nav-group { padding:0 12px; margin-bottom:8px; }
+    .nav-group-label { font-family:var(--font-head); font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); padding:0 8px; margin-bottom:6px; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; text-decoration:none; color:var(--text-muted); font-size:0.88rem; font-weight:500; transition:background 0.2s, color 0.2s; cursor:pointer; }
+    .nav-item:hover { background:rgba(255,255,255,0.04); color:var(--text); }
+    .nav-item.active { background:rgba(34,197,94,0.1); color:var(--green-bright); }
+    .nav-icon { font-size:1rem; width:20px; text-align:center; }
+    .sidebar-bottom { margin-top:auto; padding:16px 12px 0; border-top:1px solid var(--border); }
+    .user-pill { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; cursor:pointer; transition:background 0.2s; }
+    .user-pill:hover { background:rgba(255,255,255,0.04); }
+    .user-avatar { width:32px; height:32px; border-radius:8px; background:var(--gradient); display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-size:0.75rem; font-weight:700; color:#050a10; flex-shrink:0; }
+    .user-name { font-size:0.82rem; font-weight:600; }
+    .user-plan { font-size:0.72rem; color:var(--green); }
+
+    /* Main */
+    .main { margin-left:240px; flex:1; min-height:100vh; }
+    .topbar { padding:16px 32px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:rgba(5,10,16,0.6); backdrop-filter:blur(8px); position:sticky; top:0; z-index:10; }
+    .topbar-left h2 { font-family:var(--font-head); font-size:1.1rem; font-weight:700; }
+    .topbar-left p { color:var(--text-muted); font-size:0.8rem; }
+    .topbar-right { display:flex; gap:12px; align-items:center; }
+    .topbar-btn { background:var(--gradient); color:#050a10; font-family:var(--font-head); font-weight:700; font-size:0.82rem; padding:8px 18px; border-radius:50px; border:none; cursor:pointer; }
+    .notif-btn { width:36px; height:36px; background:var(--surface); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.9rem; position:relative; }
+    .notif-dot { position:absolute; top:6px; right:6px; width:7px; height:7px; background:var(--green); border-radius:50%; border:2px solid var(--bg2); }
+
+    /* Dashboard content */
+    .dash-body { padding:28px 32px; }
+    /* KPI cards */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+    .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; transition:border-color 0.3s; }
+    .kpi-card:hover { border-color:rgba(34,197,94,0.3); }
+    .kpi-label { font-size:0.75rem; font-family:var(--font-head); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+    .kpi-value { font-family:var(--font-head); font-size:1.8rem; font-weight:800; margin-bottom:6px; }
+    .kpi-change { font-size:0.75rem; display:flex; align-items:center; gap:4px; }
+    .kpi-change.up { color:var(--green); }
+    .kpi-change.down { color:#f87171; }
+
+    /* Charts row */
+    .charts-row { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:28px; }
+    .chart-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; }
+    .chart-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .chart-title { font-family:var(--font-head); font-size:0.9rem; font-weight:700; }
+    .chart-tabs { display:flex; gap:4px; }
+    .chart-tab { font-size:0.75rem; padding:4px 12px; border-radius:50px; border:1px solid var(--border); color:var(--text-muted); cursor:pointer; font-family:var(--font-head); font-weight:600; transition:0.2s; background:none; }
+    .chart-tab.active { background:rgba(34,197,94,0.1); color:var(--green); border-color:rgba(34,197,94,0.3); }
+
+    /* Bar chart */
+    .bar-chart { display:flex; align-items:flex-end; gap:8px; height:140px; }
+    .bar-group { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .bar { width:100%; border-radius:6px 6px 0 0; transition:height 0.5s ease; position:relative; cursor:pointer; }
+    .bar:hover::after { content:attr(data-val); position:absolute; top:-24px; left:50%; transform:translateX(-50%); font-size:0.7rem; font-family:var(--font-head); font-weight:700; color:var(--text); background:var(--surface2); padding:2px 6px; border-radius:4px; white-space:nowrap; }
+    .bar-label { font-size:0.65rem; color:var(--text-muted); }
+
+    /* Donut */
+    .donut-wrap { display:flex; flex-direction:column; align-items:center; }
+    .donut-svg { width:130px; height:130px; }
+    .donut-legend { display:flex; flex-direction:column; gap:8px; width:100%; margin-top:16px; }
+    .legend-item { display:flex; align-items:center; gap:8px; font-size:0.8rem; }
+    .legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .legend-item span:last-child { margin-left:auto; font-weight:700; font-family:var(--font-head); }
+
+    /* Recent activity */
+    .bottom-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .activity-list { display:flex; flex-direction:column; gap:1px; }
+    .activity-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+    .activity-item:last-child { border-bottom:none; }
+    .act-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; }
+    .act-body { flex:1; min-width:0; }
+    .act-title { font-size:0.83rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .act-time { font-size:0.72rem; color:var(--text-muted); }
+    .act-badge { font-size:0.7rem; font-weight:700; font-family:var(--font-head); padding:2px 8px; border-radius:50px; }
+    .badge-green { background:rgba(34,197,94,0.1); color:var(--green); }
+    .badge-blue { background:rgba(56,189,248,0.1); color:var(--blue); }
+    .badge-yellow { background:rgba(251,191,36,0.1); color:#fbbf24; }
+
+    /* Campaigns table */
+    .camp-table { width:100%; border-collapse:collapse; }
+    .camp-table th { font-family:var(--font-head); font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); text-align:left; padding:8px 0; border-bottom:1px solid var(--border); }
+    .camp-table td { padding:12px 0; font-size:0.83rem; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .camp-table tr:last-child td { border-bottom:none; }
+    .status-pill { display:inline-block; font-size:0.7rem; font-weight:700; font-family:var(--font-head); padding:2px 8px; border-radius:50px; }
+
+    @media(max-width:1024px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} .charts-row{grid-template-columns:1fr;} }
+    @media(max-width:768px){ .sidebar{display:none;} .main{margin-left:0;} .bottom-row{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="../index.html" class="logo"><span class="logo-mark">G</span><span class="logo-text">GrowBrow<span class="logo-ai">.ai</span></span></a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Main</div>
+    <div class="nav-item active"><span class="nav-icon">📊</span>Dashboard</div>
+    <div class="nav-item"><span class="nav-icon">📣</span>Campaigns</div>
+    <div class="nav-item"><span class="nav-icon">🤖</span>Chatbots</div>
+    <div class="nav-item"><span class="nav-icon">💬</span>Live Chat</div>
+    <div class="nav-item"><span class="nav-icon">👥</span>Contacts</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Revenue</div>
+    <div class="nav-item"><span class="nav-icon">💳</span>Payments</div>
+    <div class="nav-item"><span class="nav-icon">🛍</span>Catalog</div>
+    <div class="nav-item"><span class="nav-icon">📈</span>Analytics</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Settings</div>
+    <div class="nav-item"><span class="nav-icon">🔗</span>Integrations</div>
+    <div class="nav-item"><span class="nav-icon">⚙️</span>Settings</div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="user-pill">
+      <div class="user-avatar">RK</div>
+      <div>
+        <div class="user-name">Rahul Kapoor</div>
+        <div class="user-plan">✦ Growth Plan</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main content -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2>Good morning, Rahul 👋</h2>
+      <p>Tuesday, 15 July 2025 — Here's what's happening</p>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn">🔔<span class="notif-dot"></span></div>
+      <button class="topbar-btn" onclick="alert('Opening campaign builder...')">+ New Campaign</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Revenue (This Month)</div>
+        <div class="kpi-value" id="kpiRev">₹0</div>
+        <div class="kpi-change up">↑ 34% vs last month</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Messages Sent</div>
+        <div class="kpi-value" id="kpiMsg">0</div>
+        <div class="kpi-change up">↑ 18% vs last month</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Open Rate</div>
+        <div class="kpi-value" id="kpiOpen">0%</div>
+        <div class="kpi-change up">↑ 4.2% vs last month</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Chatbots</div>
+        <div class="kpi-value" id="kpiBot">0</div>
+        <div class="kpi-change up">↑ 2 new this week</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Message Volume & Revenue</div>
+          <div class="chart-tabs">
+            <button class="chart-tab active">7D</button>
+            <button class="chart-tab">30D</button>
+            <button class="chart-tab">90D</button>
+          </div>
+        </div>
+        <div class="bar-chart" id="barChart"></div>
+        <div style="display:flex;gap:20px;margin-top:12px;">
+          <span style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text-muted)"><span style="width:10px;height:10px;background:var(--green);border-radius:2px;display:inline-block"></span>Messages</span>
+          <span style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text-muted)"><span style="width:10px;height:10px;background:var(--blue);border-radius:2px;display:inline-block"></span>Revenue (₹00s)</span>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">Message Types</div></div>
+        <div class="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--surface2)" stroke-width="3.5"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#22c55e" stroke-width="3.5" stroke-dasharray="45 55" stroke-dashoffset="25" style="transition:stroke-dasharray 1s ease;"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-dasharray="28 72" stroke-dashoffset="-20" style="transition:stroke-dasharray 1s ease;"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#a3e635" stroke-width="3.5" stroke-dasharray="18 82" stroke-dashoffset="-48" style="transition:stroke-dasharray 1s ease;"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#fbbf24" stroke-width="3.5" stroke-dasharray="9 91" stroke-dashoffset="-66" style="transition:stroke-dasharray 1s ease;"/>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:#22c55e"></span>Marketing<span>45%</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#38bdf8"></span>Transactional<span>28%</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#a3e635"></span>Support<span>18%</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#fbbf24"></span>Re-engagement<span>9%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row">
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">Recent Activity</div><a href="#" style="font-size:0.78rem;color:var(--green);text-decoration:none;">View all →</a></div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="act-icon" style="background:rgba(34,197,94,0.1)">📣</div>
+            <div class="act-body"><div class="act-title">Summer Sale broadcast sent</div><div class="act-time">2 minutes ago · 8,412 delivered</div></div>
+            <span class="act-badge badge-green">Live</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:rgba(56,189,248,0.1)">🤖</div>
+            <div class="act-body"><div class="act-title">Cart Recovery Bot triggered</div><div class="act-time">14 minutes ago · 43 sessions</div></div>
+            <span class="act-badge badge-blue">Auto</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:rgba(251,191,36,0.1)">💳</div>
+            <div class="act-body"><div class="act-title">Payment received — ₹12,499</div><div class="act-time">38 minutes ago · Order #8821</div></div>
+            <span class="act-badge badge-yellow">Paid</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:rgba(34,197,94,0.1)">👥</div>
+            <div class="act-body"><div class="act-title">142 new contacts imported</div><div class="act-time">1 hour ago · from Shopify</div></div>
+            <span class="act-badge badge-green">Done</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:rgba(163,230,53,0.1)">🧠</div>
+            <div class="act-body"><div class="act-title">AI predicted 23 churn risks</div><div class="act-time">2 hours ago · Re-engagement triggered</div></div>
+            <span class="act-badge" style="background:rgba(163,230,53,0.1);color:#a3e635">AI</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">Top Campaigns</div><a href="#" style="font-size:0.78rem;color:var(--green);text-decoration:none;">See all →</a></div>
+        <table class="camp-table">
+          <thead><tr><th>Campaign</th><th>Open</th><th>Conv</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Summer Sale 🔥</td>
+              <td style="color:var(--green-bright)">96%</td>
+              <td>41%</td>
+              <td><span class="status-pill" style="background:rgba(34,197,94,0.1);color:var(--green)">Live</span></td>
+            </tr>
+            <tr>
+              <td>Cart Recovery</td>
+              <td style="color:var(--green-bright)">98%</td>
+              <td>38%</td>
+              <td><span class="status-pill" style="background:rgba(34,197,94,0.1);color:var(--green)">Live</span></td>
+            </tr>
+            <tr>
+              <td>Win-back Apr</td>
+              <td>89%</td>
+              <td>22%</td>
+              <td><span class="status-pill" style="background:rgba(56,189,248,0.1);color:var(--blue)">Paused</span></td>
+            </tr>
+            <tr>
+              <td>New Arrivals</td>
+              <td>91%</td>
+              <td>29%</td>
+              <td><span class="status-pill" style="background:rgba(251,191,36,0.1);color:#fbbf24">Draft</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Animate KPIs
+function animNum(el, end, prefix='', suffix='') {
+  let n = 0, step = end/60;
+  const t = setInterval(() => {
+    n += step; if(n>=end){n=end;clearInterval(t);}
+    el.textContent = prefix + Math.round(n).toLocaleString('en-IN') + suffix;
+  }, 16);
+}
+setTimeout(() => {
+  animNum(document.getElementById('kpiRev'), 284000, '₹');
+  animNum(document.getElementById('kpiMsg'), 18412, '', '');
+  animNum(document.getElementById('kpiOpen'), 97, '', '%');
+  animNum(document.getElementById('kpiBot'), 7, '', '');
+}, 300);
+
+// Bar chart
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const msgs = [2100,1850,3200,2800,4100,3600,2900];
+const revs = [180,160,290,240,380,310,260];
+const chart = document.getElementById('barChart');
+const max = Math.max(...msgs);
+days.forEach((d,i) => {
+  const g = document.createElement('div');
+  g.className = 'bar-group';
+  const msgBar = document.createElement('div');
+  msgBar.className = 'bar';
+  msgBar.style.cssText = `height:0;background:linear-gradient(to top,#22c55e,#4ade80);`;
+  msgBar.dataset.val = msgs[i].toLocaleString('en-IN');
+  const revBar = document.createElement('div');
+  revBar.className = 'bar';
+  revBar.style.cssText = `height:0;background:linear-gradient(to top,#38bdf8,#7dd3fc);`;
+  revBar.dataset.val = '₹'+revs[i]+'00';
+  const lbl = document.createElement('div');
+  lbl.className = 'bar-label'; lbl.textContent = d;
+  g.append(msgBar, revBar, lbl);
+  chart.appendChild(g);
+  setTimeout(() => {
+    msgBar.style.height = (msgs[i]/max*110)+'px';
+    revBar.style.height = (revs[i]/380*80)+'px';
+  }, 200+i*60);
+});
+
+// Chart tabs
+document.querySelectorAll('.chart-tab').forEach(tab => {
+  tab.addEventListener('click', function(){
+    this.closest('.chart-tabs').querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
